@@ -80,9 +80,7 @@ If someone else finds it helpful too, that’s a bonus 🙂
 
 You can read the blogs here:
 
-👉 https://yourusername.github.io/ishan-ai-blogs/
-
-(Replace `yourusername` with your GitHub username)
+👉 https://ishan-chowdhury.github.io/ishan-ai-blogs/
 
 ---
 
