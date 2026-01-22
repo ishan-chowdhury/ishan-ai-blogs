@@ -1,93 +1,94 @@
-# Ishan’s AI Blogs 
+# Ishan’s AI Blogs
 
-This repository contains my technical blogs on **Search Algorithms**, **Artificial Intelligence concepts**, and **AI problem-solving puzzles**.
+This repository is a collection of blog posts where I write about **Artificial Intelligence**, especially **search algorithms**, core AI concepts, and interesting problem-solving puzzles.
 
-The goal of this project is to explain AI ideas in a **clear, structured, and intuitive way**, combining theory, code, and visual intuition.
+I started this project mainly to document what I’m learning, explain ideas in my own words, and build a small technical writing portfolio along the way.
 
-All blogs are written in **Markdown** using Obsidian and published via **GitHub Pages**.
+All the blogs are written in Markdown (using Obsidian) and published with GitHub Pages.
 
 ---
 
-## 📚 What You’ll Find Here
+## What’s in Here?
 
-### 🔍 Search Algorithms
-- Breadth-First Search (BFS)
-- Depth-First Search (DFS)
-- Uniform Cost Search
-- Greedy Best-First Search
-- A* Search Algorithm
-- Variants and comparisons of informed vs uninformed search
+### Search Algorithms
+You’ll find posts on algorithms like:
 
-Each post includes:
-- Conceptual explanation  
-- Algorithm properties (completeness, optimality, time & space)  
-- Pseudocode / Python implementation  
+- BFS and DFS  
+- Uniform Cost Search  
+- Greedy Best-First Search  
+- A* Search  
+- Comparisons between different search strategies  
+
+Each blog usually includes:
+- A simple explanation  
+- Key properties (like optimality and completeness)  
+- Some code (mostly Python)  
 - Worked examples  
 
 ---
 
-### 🤖 Artificial Intelligence Concepts
-- Problem formulation in AI
-- Heuristic design and evaluation
-- Rational agents
-- State space search
-- Planning and reasoning basics
-- Foundations of intelligent decision-making
+### AI Concepts
+I also write about general AI topics such as:
+
+- How problems are formulated in AI  
+- What heuristics are and why they matter  
+- How agents make decisions  
+- Basic planning and reasoning ideas  
+
+These are mostly focused on understanding the *thinking* behind AI, not just the math.
 
 ---
 
-### 🧩 AI Puzzles & Problem Solving
-- Classic AI puzzles (8-Puzzle, Water Jug, Missionaries & Cannibals)
-- Search-based problem solving
-- Step-by-step reasoning and solutions
-- Algorithmic thinking through puzzles
+### AI Puzzles & Problem Solving
+Some posts are based on classic AI puzzles like:
+
+- The 8-Puzzle  
+- Water Jug Problem  
+- Missionaries and Cannibals  
+- Other logic and search-based problems  
+
+These are fun to solve and really help in understanding how search algorithms work in practice.
 
 ---
 
-## 🛠 Tools & Technologies
+## Tools I Use
 
-- **Markdown** (Obsidian)
-- **GitHub Pages** for publishing
-- **Mermaid** for diagrams
-- **LaTeX** for mathematical expressions
-- **Python** for algorithm implementations
+- Markdown (with Obsidian)  
+- GitHub Pages for hosting  
+- Mermaid for diagrams  
+- LaTeX for equations  
+- Python for examples  
 
----
-
-## 🎯 Purpose of This Repository
-
-This repository serves as:
-
-- A personal learning journal for Artificial Intelligence  
-- A technical writing portfolio  
-- A resource for students learning AI and search algorithms  
-- A place to document intuitive explanations of complex ideas  
+Nothing fancy — just simple tools that get the job done.
 
 ---
 
-## 🚀 Roadmap
+## Why This Repo Exists
 
-Planned additions include:
+This repository is mainly for:
 
-- More informed and uninformed search algorithms  
-- Game-playing algorithms (Minimax, Alpha-Beta Pruning)  
-- Constraint satisfaction problems  
-- Introductory machine learning concepts  
-- More AI puzzles with visual explanations  
+- Tracking my AI learning journey  
+- Practicing technical writing  
+- Sharing explanations that are easy to follow  
+- Building a small personal knowledge base  
 
----
-
-## 🌐 Live Blog
-
-The blogs are published here:
-
-👉 `https://ishan-chowdhury.github.io/ishan-ai-blogs/`
+If someone else finds it helpful too, that’s a bonus 🙂
 
 ---
 
-## 📬 Feedback
+## Live Blog
 
-Suggestions, corrections, and discussions are always welcome.  
-Feel free to open an issue or connect via GitHub.
+You can read the blogs here:
 
-Happy Learning! 
+👉 https://yourusername.github.io/ishan-ai-blogs/
+
+(Replace `yourusername` with your GitHub username)
+
+---
+
+## Feedback
+
+If you spot a mistake or have a suggestion, feel free to open an issue or reach out.  
+I’m always learning and improving.
+
+Thanks for stopping by!
