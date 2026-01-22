@@ -31,7 +31,7 @@
       max-width: 1100px;
       margin: auto;
       padding: 2rem;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
     h1, h2, h3 {
@@ -85,20 +85,30 @@
 <h1>A* Search Algorithm: Intelligent Pathfinding in AI</h1>
 
 <p>
-Search algorithms play a crucial role in Artificial Intelligence, especially in problems involving
-<b>pathfinding</b>, <b>planning</b>, and <b>navigation</b>. Among them, the <b>A*</b> (A-star) search
-algorithm is widely used because it efficiently finds the <b>shortest path</b> while intelligently
-guiding the search.
+Search algorithms are at the heart of many Artificial Intelligence systems. Whenever an AI system needs
+to decide <i>where to go next</i>, <i>what action to take</i>, or <i>how to reach a goal efficiently</i>,
+a search algorithm is usually involved.
 </p>
 
-<p>This blog covers:</p>
+<p>
+From simple maze solvers to advanced navigation systems in self-driving cars, search techniques make
+intelligent decision-making possible. Among all these techniques, the <b>A*</b> (A-star) algorithm
+stands out because it is both <b>efficient</b> and <b>optimal</b>.
+</p>
+
+<p>
+Unlike basic search methods that explore blindly, A* uses intelligent guidance to focus only on the
+most promising paths. This makes it especially useful in real-world applications where speed and
+accuracy both matter.
+</p>
+
+<p>This blog will walk you through:</p>
 <ul>
-  <li>Introduction to A*</li>
-  <li>How A* differs from other algorithms</li>
-  <li>How to implement A*</li>
-  <li>Properties of A*</li>
-  <li>Heuristics and optimality</li>
-  <li>A solved example</li>
+  <li>How A* works at a conceptual level</li>
+  <li>How it compares with other search algorithms</li>
+  <li>How to implement it in Python</li>
+  <li>Why heuristics are so important</li>
+  <li>How A* behaves in practice using an example</li>
 </ul>
 
 <hr>
@@ -106,33 +116,44 @@ guiding the search.
 <h2>1. Introduction to A* Search</h2>
 
 <p>
-A* is a <b>best-first search algorithm</b> that finds the shortest path from a start node to a goal
-node using both:
+A* is classified as a <b>best-first search algorithm</b>. This means that it always chooses the next
+node based on what looks like the best option at the moment.
 </p>
 
-<ul>
-  <li>The actual cost from the start</li>
-  <li>A heuristic estimate to the goal</li>
-</ul>
+<p>
+However, what makes A* special is the way it defines “best”. Instead of relying only on how far a node
+is from the goal or how much cost has already been spent, A* combines both ideas.
+</p>
 
-<p>It evaluates nodes using:</p>
+<p>
+For each node, A* computes:
+</p>
 
 <p>$$ f(n) = g(n) + h(n) $$</p>
 
 <ul>
-  <li><b>g(n)</b> = cost from start to node n</li>
-  <li><b>h(n)</b> = estimated cost to the goal</li>
-  <li><b>f(n)</b> = total estimated cost</li>
+  <li><b>g(n)</b>: The actual cost from the start node to the current node</li>
+  <li><b>h(n)</b>: A heuristic estimate of the cost from the current node to the goal</li>
+  <li><b>f(n)</b>: The estimated total cost of the solution through this node</li>
 </ul>
 
 <p>
-By balancing real cost and estimated future cost, A* explores fewer nodes than uninformed algorithms
-like BFS or Dijkstra.
+By doing this, A* avoids wasting time on paths that are clearly inefficient. It focuses on routes that
+are both <i>cheap so far</i> and <i>promising for the future</i>.
+</p>
+
+<p>
+This balance between exploration and guidance is what makes A* one of the most practical and widely
+used algorithms in Artificial Intelligence.
 </p>
 
 <hr>
 
 <h2>A* Search Flowchart</h2>
+
+<p>
+The following flowchart summarizes the main steps followed by the A* algorithm during execution:
+</p>
 
 <div class="mermaid">
 flowchart TD
@@ -150,9 +171,19 @@ flowchart TD
     K --> D
 </div>
 
+<p>
+At every step, A* selects the node with the smallest estimated total cost and expands it. If the goal
+is reached, the algorithm reconstructs the path and stops.
+</p>
+
 <hr>
 
-<h2>2. How A* is Different from Greedy Best-First and Other Algorithms</h2>
+<h2>2. How A* is Different from Other Search Algorithms</h2>
+
+<p>
+Different search algorithms prioritize different types of information. Some focus only on distance,
+while others focus only on cost. A* combines both.
+</p>
 
 <table>
 <tr><th>Algorithm</th><th>Uses g(n)</th><th>Uses h(n)</th><th>Optimal</th><th>Fast</th></tr>
@@ -162,23 +193,29 @@ flowchart TD
 <tr><td><b>A*</b></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
 </table>
 
-<h3>Key Differences</h3>
+<p>
+Breadth-First Search guarantees the shortest path only when all edges have equal cost.  
+Dijkstra’s algorithm guarantees optimality but explores many unnecessary nodes.  
+Greedy search is fast but often chooses poor paths.
+</p>
 
 <p>
-<b>Greedy Best-First Search</b> only uses h(n) → Fast, but not optimal.<br>
-<b>Dijkstra’s Algorithm</b> only uses g(n) → Optimal, but slower.<br>
-<b>A*</b> uses both → Efficient and optimal.
+A* carefully balances speed and accuracy, making it ideal for most AI applications.
 </p>
 
 <hr>
 
-<h2>3. How to Write Code for A* Search</h2>
+<h2>3. How to Implement A* in Python</h2>
+
+<p>
+Below is a simple grid-based implementation of the A* algorithm using Python. This version uses the
+Manhattan distance as a heuristic.
+</p>
 
 <pre><code>
 import heapq
 
 def heuristic(a, b):
-    # Manhattan distance
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 def a_star(grid, start, goal):
@@ -218,25 +255,46 @@ def a_star(grid, start, goal):
     return None
 </code></pre>
 
+<p>
+This implementation maintains an open set of nodes to explore and always selects the node with the
+lowest estimated cost.
+</p>
+
 <hr>
 
 <h2>4. Properties of A*</h2>
 
 <h3>Optimal</h3>
-<p>A* finds the shortest path if the heuristic is admissible.</p>
+<p>
+When an admissible heuristic is used, A* is guaranteed to find the shortest possible path.
+</p>
 
 <h3>Complete</h3>
-<p>A* always finds a solution if a path exists.</p>
+<p>
+If a solution exists, A* will always find it, provided all step costs are positive.
+</p>
 
 <p><b>Time Complexity:</b> $$ O(b^d) $$</p>
 <p><b>Space Complexity:</b> $$ O(b^d) $$</p>
+
+<p>
+While A* is powerful, it can also be memory-intensive. This is why heuristic design is so important in
+large search spaces.
+</p>
 
 <hr>
 
 <h2>5. Heuristics and Optimality</h2>
 
-<p>Heuristics estimate the cost to reach the goal:</p>
+<p>
+A heuristic is a function that estimates how far a node is from the goal.
+</p>
+
 <p>$$ h(n) \approx \text{distance to goal} $$</p>
+
+<p>
+Good heuristics help A* reduce unnecessary exploration, while bad heuristics can slow it down.
+</p>
 
 <p><b>Admissible heuristic:</b></p>
 <p>$$ h(n) \leq h^*(n) $$</p>
@@ -256,6 +314,10 @@ def a_star(grid, start, goal):
 
 <h2>6. Example Problem Using A*</h2>
 
+<p>
+Let’s apply A* to a small graph-based problem to see how it works in practice.
+</p>
+
 <div class="mermaid">
 graph LR
 S -->|1| A
@@ -273,14 +335,9 @@ A -->|1| B
 <tr><td>G</td><td>0</td></tr>
 </table>
 
-<p><b>Step 1:</b></p>
-<p>$$ f(A) = 1 + 3 = 4 $$</p>
-<p>$$ f(B) = 4 + 2 = 6 $$</p>
-
-<p>A* chooses A.</p>
-
-<p><b>Step 2:</b></p>
-<p>$$ f(G) = 4 + 0 = 4 $$</p>
+<p>
+A* evaluates both paths and chooses the one with the lower estimated total cost.
+</p>
 
 <p><b>Final Path:</b> S → A → G (Cost = 4)</p>
 
@@ -289,8 +346,18 @@ A -->|1| B
 <h2>7. Conclusion</h2>
 
 <p>
-A* is one of the most powerful search algorithms because it is optimal, complete,
-heuristic-driven, and efficient. With a good heuristic, it provides both speed and accuracy.
+A* remains one of the most practical and widely used search algorithms in Artificial Intelligence.
+</p>
+
+<p>
+By combining real path costs with intelligent heuristics, it finds optimal solutions efficiently.
+Whether you are working on games, robotics, or AI planning systems, understanding A* is a valuable
+skill.
+</p>
+
+<p>
+Mastering A* also builds a strong foundation for more advanced AI techniques such as heuristic search,
+planning algorithms, and reinforcement learning.
 </p>
 
 </body>
