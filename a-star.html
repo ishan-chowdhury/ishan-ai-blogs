@@ -4,7 +4,17 @@
   <meta charset="UTF-8">
   <title>A* Search Algorithm</title>
 
+  <!-- Fira Code Font -->
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax for LaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Mermaid for Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "dark" });
+  </script>
 
   <style>
     body {
@@ -14,11 +24,43 @@
       max-width: 900px;
       margin: auto;
       padding: 2rem;
+      line-height: 1.7;
+    }
+
+    h1, h2, h3 {
+      color: #ffffff;
+    }
+
+    pre {
+      background: #2d2d2d;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    code {
+      color: #9cdcfe;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
     }
 
     a {
       color: #7aa2f7;
       text-decoration: none;
+    }
+
+    hr {
+      border: 1px solid #333;
+      margin: 2rem 0;
     }
   </style>
 </head>
@@ -27,19 +69,226 @@
 
 <a href="index.html">← Back to Home</a>
 
-<h1>A* Search Algorithm</h1>
+<h1>A* Search Algorithm: Intelligent Pathfinding in AI</h1>
 
-<object 
-  data="A_Star_Search.pdf" 
-  type="application/pdf" 
-  width="100%" 
-  height="900px">
-  
-  <p>Your browser can't display PDFs. 
-     <a href="A_Star_Search.pdf">Download PDF</a>
-  </p>
+<p>Search algorithms play a crucial role in Artificial Intelligence, especially in problems involving <b>pathfinding</b>, <b>planning</b>, and <b>navigation</b>. Among them, the <b>A*</b> (A-star) search algorithm is widely used because it efficiently finds the <b>shortest path</b> while intelligently guiding the search.</p>
 
-</object>
+<p>This blog covers:</p>
+<ul>
+  <li>Introduction to A*</li>
+  <li>How A* differs from Greedy Best-First and other algorithms</li>
+  <li>How to implement A*</li>
+  <li>Properties: optimality, completeness, time & space</li>
+  <li>Role of heuristics in optimality</li>
+  <li>A solved example using A*</li>
+</ul>
+
+<hr>
+
+<h2>1. Introduction to A* Search</h2>
+
+<p>A* is a <b>best-first search algorithm</b> that finds the shortest path from a start node to a goal node using both:</p>
+
+<ul>
+  <li>The actual cost from the start</li>
+  <li>A heuristic estimate to the goal</li>
+</ul>
+
+<p>It evaluates nodes using:</p>
+
+<p>$$f(n) = g(n) + h(n)$$</p>
+
+<p>Where:</p>
+<ul>
+  <li><b>g(n)</b> = cost from start to node n</li>
+  <li><b>h(n)</b> = estimated cost to the goal</li>
+  <li><b>f(n)</b> = total estimated cost</li>
+</ul>
+
+<p>By balancing real cost and estimated future cost, A* explores fewer nodes than uninformed algorithms like BFS or Dijkstra.</p>
+
+<h2>A* Search Flowchart</h2>
+
+<div class="mermaid">
+flowchart TD
+    A[Start] --> B[Initialize Open Set]
+    B --> C[Set g start to zero]
+    C --> D{Open Set Empty}
+
+    D -->|Yes| Z[Failure]
+    D -->|No| E[Select Node with Lowest f]
+
+    E --> F{Is Goal Reached}
+    F -->|Yes| G[Reconstruct Path]
+    G --> H[End]
+
+    F -->|No| I[Expand Neighbors]
+    I --> J[Compute g h and f]
+    J --> K[Update Open Set]
+    K --> D
+</div>
+
+<hr>
+
+<h2>2. How A* is Different from Greedy Best-First and Other Algorithms</h2>
+
+<table>
+  <tr>
+    <th>Algorithm</th>
+    <th>Uses g(n)?</th>
+    <th>Uses h(n)?</th>
+    <th>Optimal?</th>
+    <th>Fast?</th>
+  </tr>
+  <tr>
+    <td>BFS</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td>
+  </tr>
+  <tr>
+    <td>Dijkstra</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td>
+  </tr>
+  <tr>
+    <td>Greedy Best-First</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td>
+  </tr>
+  <tr>
+    <td><b>A*</b></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+  </tr>
+</table>
+
+<h3>Key Differences</h3>
+
+<p><b>Greedy Best-First Search</b> only uses h(n) → Fast, but not guaranteed to find the shortest path.</p>
+<p><b>Dijkstra’s Algorithm</b> only uses g(n) → Always optimal, but explores many nodes.</p>
+<p><b>A*</b> uses both → Efficient and optimal.</p>
+
+<hr>
+
+<h2>3. How to Write Code for A* Search</h2>
+
+<pre><code>
+import heapq
+
+def heuristic(a, b):
+    # Manhattan distance
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def a_star(grid, start, goal):
+    rows, cols = len(grid), len(grid[0])
+    
+    open_set = []
+    heapq.heappush(open_set, (0, start))
+    
+    came_from = {}
+    g_score = {start: 0}
+    
+    while open_set:
+        _, current = heapq.heappop(open_set)
+        
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        x, y = current
+        neighbors = [(x+1,y), (x-1,y), (x,y+1), (x,y-1)]
+        
+        for nx, ny in neighbors:
+            if 0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == 0:
+                neighbor = (nx, ny)
+                tentative_g = g_score[current] + 1
+                
+                if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                    g_score[neighbor] = tentative_g
+                    f = tentative_g + heuristic(neighbor, goal)
+                    heapq.heappush(open_set, (f, neighbor))
+                    came_from[neighbor] = current
+    
+    return None
+</code></pre>
+
+<hr>
+
+<h2>4. Properties of A*</h2>
+
+<p><b>Optimal:</b> Finds the shortest path if the heuristic is admissible.</p>
+<p><b>Complete:</b> Always finds a solution if one exists.</p>
+
+<p>Time Complexity:</p>
+<p>$$O(b^d)$$</p>
+
+<p>Space Complexity:</p>
+<p>$$O(b^d)$$</p>
+
+<hr>
+
+<h2>5. Heuristics and Optimality</h2>
+
+<p>$$h(n) \approx \text{distance to goal}$$</p>
+
+<p>Admissible heuristic:</p>
+<p>$$h(n) \leq h^*(n)$$</p>
+
+<p>Consistent heuristic:</p>
+<p>$$h(n) \leq c(n,n') + h(n')$$</p>
+
+<table>
+  <tr><th>Heuristic</th><th>Use Case</th></tr>
+  <tr><td>Manhattan</td><td>Grid movement</td></tr>
+  <tr><td>Euclidean</td><td>Continuous space</td></tr>
+  <tr><td>Diagonal</td><td>8-direction grids</td></tr>
+  <tr><td>Zero</td><td>Dijkstra</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Example Problem Using A*</h2>
+
+<div class="mermaid">
+graph LR
+S -->|1| A
+A -->|3| G
+S -->|4| B
+B -->|2| G
+A -->|1| B
+</div>
+
+<h3>Heuristic Values</h3>
+
+<table>
+  <tr><th>Node</th><th>h(n)</th></tr>
+  <tr><td>S</td><td>5</td></tr>
+  <tr><td>A</td><td>3</td></tr>
+  <tr><td>B</td><td>2</td></tr>
+  <tr><td>G</td><td>0</td></tr>
+</table>
+
+<p>$$f(A) = 1 + 3 = 4$$</p>
+<p>$$f(B) = 4 + 2 = 6$$</p>
+
+<p>Choose <b>A</b>.</p>
+
+<p>$$f(G) = 4 + 0 = 4$$</p>
+
+<p><b>Final Path:</b> S → A → G</p>
+<p><b>Total Cost:</b> 4</p>
+
+<hr>
+
+<h2>7. Conclusion</h2>
+
+<p>A* is one of the most powerful search algorithms because it is:</p>
+
+<ul>
+  <li>Optimal</li>
+  <li>Complete</li>
+  <li>Heuristic-driven</li>
+  <li>Efficient</li>
+</ul>
+
+<p>With a good heuristic, A* provides both <b>speed</b> and <b>accuracy</b>.</p>
 
 </body>
 </html>
+
