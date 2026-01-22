@@ -4,14 +4,11 @@
   <meta charset="UTF-8">
   <title>A* Search Algorithm</title>
 
-  <!-- Fira Code Font -->
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- MathJax -->
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <!-- Mermaid -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
   <script>
     mermaid.initialize({
       startOnLoad: true,
@@ -101,7 +98,7 @@ guiding the search.
   <li>How to implement A*</li>
   <li>Properties of A*</li>
   <li>Heuristics and optimality</li>
-  <li>An example problem</li>
+  <li>A solved example</li>
 </ul>
 
 <hr>
@@ -155,58 +152,96 @@ flowchart TD
 
 <hr>
 
-<h2>2. How A* is Different from Other Algorithms</h2>
+<h2>2. How A* is Different from Greedy Best-First and Other Algorithms</h2>
 
 <table>
-<tr><th>Algorithm</th><th>Uses g(n)</th><th>Uses h(n)</th><th>Optimal</th></tr>
-<tr><td>BFS</td><td>No</td><td>No</td><td>Yes</td></tr>
-<tr><td>Dijkstra</td><td>Yes</td><td>No</td><td>Yes</td></tr>
-<tr><td>Greedy</td><td>No</td><td>Yes</td><td>No</td></tr>
-<tr><td><b>A*</b></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Algorithm</th><th>Uses g(n)</th><th>Uses h(n)</th><th>Optimal</th><th>Fast</th></tr>
+<tr><td>BFS</td><td>No</td><td>No</td><td>Yes</td><td>No</td></tr>
+<tr><td>Dijkstra</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td></tr>
+<tr><td>Greedy</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td><b>A*</b></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
 </table>
 
+<h3>Key Differences</h3>
+
 <p>
-Greedy uses only the heuristic and is fast but not optimal.  
-Dijkstra uses only the path cost and is optimal but slower.  
-<b>A*</b> uses both, making it efficient and optimal.
+<b>Greedy Best-First Search</b> only uses h(n) → Fast, but not optimal.<br>
+<b>Dijkstra’s Algorithm</b> only uses g(n) → Optimal, but slower.<br>
+<b>A*</b> uses both → Efficient and optimal.
 </p>
 
 <hr>
 
-<h2>3. Python Implementation</h2>
+<h2>3. How to Write Code for A* Search</h2>
 
 <pre><code>
 import heapq
 
 def heuristic(a, b):
+    # Manhattan distance
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def a_star(grid, start, goal):
+    rows, cols = len(grid), len(grid[0])
+    
+    open_set = []
+    heapq.heappush(open_set, (0, start))
+    
+    came_from = {}
+    g_score = {start: 0}
+    
+    while open_set:
+        _, current = heapq.heappop(open_set)
+        
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        x, y = current
+        neighbors = [(x+1,y), (x-1,y), (x,y+1), (x,y-1)]
+        
+        for nx, ny in neighbors:
+            if 0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == 0:
+                neighbor = (nx, ny)
+                tentative_g = g_score[current] + 1
+                
+                if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                    g_score[neighbor] = tentative_g
+                    f = tentative_g + heuristic(neighbor, goal)
+                    heapq.heappush(open_set, (f, neighbor))
+                    came_from[neighbor] = current
+    
+    return None
 </code></pre>
 
 <hr>
 
 <h2>4. Properties of A*</h2>
 
-<ul>
-  <li>Optimal (with admissible heuristic)</li>
-  <li>Complete</li>
-  <li>Time Complexity: O(b^d)</li>
-  <li>Space Complexity: O(b^d)</li>
-</ul>
+<h3>Optimal</h3>
+<p>A* finds the shortest path if the heuristic is admissible.</p>
+
+<h3>Complete</h3>
+<p>A* always finds a solution if a path exists.</p>
+
+<p><b>Time Complexity:</b> $$ O(b^d) $$</p>
+<p><b>Space Complexity:</b> $$ O(b^d) $$</p>
 
 <hr>
 
 <h2>5. Heuristics and Optimality</h2>
 
-<p>Heuristics estimate the distance to the goal:</p>
-
+<p>Heuristics estimate the cost to reach the goal:</p>
 <p>$$ h(n) \approx \text{distance to goal} $$</p>
 
-<p>An admissible heuristic satisfies:</p>
-
+<p><b>Admissible heuristic:</b></p>
 <p>$$ h(n) \leq h^*(n) $$</p>
 
-<p>A consistent heuristic satisfies:</p>
-
+<p><b>Consistent heuristic:</b></p>
 <p>$$ h(n) \leq c(n,n') + h(n') $$</p>
 
 <table>
@@ -219,7 +254,7 @@ def heuristic(a, b):
 
 <hr>
 
-<h2>6. Example Problem</h2>
+<h2>6. Example Problem Using A*</h2>
 
 <div class="mermaid">
 graph LR
@@ -230,6 +265,23 @@ B -->|2| G
 A -->|1| B
 </div>
 
+<table>
+<tr><th>Node</th><th>h(n)</th></tr>
+<tr><td>S</td><td>5</td></tr>
+<tr><td>A</td><td>3</td></tr>
+<tr><td>B</td><td>2</td></tr>
+<tr><td>G</td><td>0</td></tr>
+</table>
+
+<p><b>Step 1:</b></p>
+<p>$$ f(A) = 1 + 3 = 4 $$</p>
+<p>$$ f(B) = 4 + 2 = 6 $$</p>
+
+<p>A* chooses A.</p>
+
+<p><b>Step 2:</b></p>
+<p>$$ f(G) = 4 + 0 = 4 $$</p>
+
 <p><b>Final Path:</b> S → A → G (Cost = 4)</p>
 
 <hr>
@@ -238,7 +290,7 @@ A -->|1| B
 
 <p>
 A* is one of the most powerful search algorithms because it is optimal, complete,
-and heuristic-driven. With a good heuristic, it provides both speed and accuracy.
+heuristic-driven, and efficient. With a good heuristic, it provides both speed and accuracy.
 </p>
 
 </body>
